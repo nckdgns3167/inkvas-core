@@ -1,0 +1,36 @@
+# Phase 0 minimal .gitignore — full Phase 1 .gitignore supersedes (c3 port + 추가)
+#
+# *Critical rule*: legacy assets are reference only, never commit (Apache-2.0 OSS core
+# license clarity + repo slim). bootstrap.md (now docs/plans/0001-bootstrap-from-zero.md)
+# §"Setup (새 PC 진입)" + ADR-0000 + 사용자 명시 규칙.
+inkvas-legacy-assets/
+
+# Claude Code local-only state (local-only permissions / agent state)
+.claude/settings.local.json
+.claude/local/
+.claude/cache/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor noise
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node / pnpm (Phase 1+ when toolchain added — pre-empt now to prevent first-commit pollution)
+node_modules/
+.pnpm-store/
+.next/
+dist/
+build/
+coverage/
+
+# Logs / env
+*.log
+.env
+.env.local
+.env.*.local
