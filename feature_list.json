@@ -1,0 +1,164 @@
+{
+  "version": "0.1.0",
+  "wip_policy": {
+    "max_in_progress": 1
+  },
+  "phases": {
+    "phase_0": {
+      "name": "Identity & Business Hypothesis",
+      "status": "completed",
+      "gate": "G0"
+    },
+    "phase_1": {
+      "name": "Harness Skeleton (c3 port + PDF substitute)",
+      "status": "active",
+      "gate": "G1"
+    },
+    "phase_2": {
+      "name": "Technical ADR Burst (ADR-0003~0019)",
+      "status": "future",
+      "gate": "G2"
+    },
+    "phase_3": {
+      "name": "Vertical Slice — Render a PDF",
+      "status": "future",
+      "gate": "G3"
+    },
+    "phase_4": {
+      "name": "Annotation MVP (재현 필수 UX + competitive P0)",
+      "status": "future",
+      "gate": "G4"
+    },
+    "phase_5": {
+      "name": "Host Integration + Collaboration (USP-2/3) + Offline (USP-5)",
+      "status": "future",
+      "gate": "G5"
+    },
+    "phase_6": {
+      "name": "Enterprise Plugin Surface + 위변조방지 (USP-1)",
+      "status": "future",
+      "gate": "G6"
+    },
+    "phase_7": {
+      "name": "Solutionization (B2B/B2G 진입 준비)",
+      "status": "future",
+      "gate": "G7"
+    }
+  },
+  "features": [
+    {
+      "id": "F-001",
+      "title": "Phase 1 harness — c3 5 파일 이식 + PDF substitute + ADR-0001/0002/0012",
+      "phase": "phase_1",
+      "status": "in_progress",
+      "wip_lock": false,
+      "category": "infra",
+      "track": "T1_harness",
+      "license_tier": "oss",
+      "manual_impact": "none",
+      "audit_ref": "original",
+      "estimate": "1d",
+      "depends_on": [],
+      "blocks": ["F-002"],
+      "description": "AGENTS.md + feature_list.{json,schema.json} + scripts/{validate,audit-refresh} + init.sh + docs/plans/{README,_template} + docs/postmortems/_template + DESIGN.md + glossary + ADR-0001/0002/0012. c3 의 5 파일 이식 후 PDF 어휘 substitute, 17 → 19 constraints 재정의 (A1-A3 라이선스 / B4-B6 성능·환경 / C7-C10 데이터·보안 / D11-D15 무결성·운영 / E16-E17 협업 / P6-1/2 Enterprise). Gate G1 = init.sh Phase 1 baseline 통과 + 양 레포 push.",
+      "applies_constraints": ["A1", "A2", "A3"],
+      "relevant_adrs": ["ADR-0000", "ADR-0001", "ADR-0002", "ADR-0012"],
+      "acceptance": {
+        "human": [
+          "AGENTS.md PDF 어휘 substitute + 19 constraints 박힘",
+          "feature_list.schema.json 에 license_tier / manual_impact / audit_ref / usp 필드 추가",
+          "scripts/validate-feature-list.ts 14 종 cross-validation 박힘 (c3 12 + Inkvas 2)",
+          "scripts/competitive-audit-refresh.ts 90/180일 freshness 게이트",
+          "init.sh 페이즈 자동 감지 + Phase 1 baseline 통과",
+          "ADR-0001 (레포 토폴로지) + ADR-0002 (Plan-as-Code) + ADR-0012 (Pre/Post-mortem) 박힘",
+          "양 레포 (inkvas-core public + inkvas-enterprise private) push 완료"
+        ],
+        "verifiable": {
+          "schema_valid": true,
+          "files_exist": [
+            "AGENTS.md",
+            "DESIGN.md",
+            "docs/glossary.md",
+            "feature_list.json",
+            "feature_list.schema.json",
+            "init.sh",
+            "scripts/validate-feature-list.ts",
+            "scripts/competitive-audit-refresh.ts",
+            "docs/plans/README.md",
+            "docs/plans/_template.md",
+            "docs/postmortems/_template.md",
+            "docs/adr/0001-repo-topology.md",
+            "docs/adr/0002-plan-as-code.md",
+            "docs/adr/0012-retro-and-postmortem-policy.md"
+          ]
+        }
+      },
+      "artifacts": {
+        "files_created": [
+          "AGENTS.md",
+          "DESIGN.md",
+          "docs/glossary.md",
+          "feature_list.json",
+          "feature_list.schema.json",
+          "init.sh",
+          "scripts/validate-feature-list.ts",
+          "scripts/competitive-audit-refresh.ts",
+          "docs/plans/README.md",
+          "docs/plans/_template.md",
+          "docs/postmortems/_template.md",
+          "docs/adr/0001-repo-topology.md",
+          "docs/adr/0002-plan-as-code.md",
+          "docs/adr/0012-retro-and-postmortem-policy.md",
+          "package.json",
+          "tsconfig.json"
+        ]
+      },
+      "active_history": [
+        {
+          "type": "started",
+          "timestamp": "2026-05-12T00:00:00Z",
+          "session_ref": "#session-2026-05-12"
+        }
+      ],
+      "risk_class": "critical",
+      "notes": "wip_lock=false (governance/meta — WIP=1 카운트 제외). ADR-0001 토폴로지 결정 후 package.json 레이아웃 확정."
+    },
+    {
+      "id": "F-002",
+      "title": "Phase 2 — Technical ADR Burst (ADR-0003~0019, 17 ADRs)",
+      "phase": "phase_2",
+      "status": "future",
+      "depends_on": ["F-001"]
+    },
+    {
+      "id": "F-003",
+      "title": "Phase 3 — Vertical Slice 'Render a PDF' (F-RENDER-001~005)",
+      "phase": "phase_3",
+      "status": "future"
+    },
+    {
+      "id": "F-004",
+      "title": "Phase 4 — Annotation MVP (재현 필수 UX + competitive P0 + 자유 캔버스 게이트)",
+      "phase": "phase_4",
+      "status": "future"
+    },
+    {
+      "id": "F-005",
+      "title": "Phase 5 — Host integration + Collaboration (USP-2/3) + Offline (USP-5)",
+      "phase": "phase_5",
+      "status": "future"
+    },
+    {
+      "id": "F-006",
+      "title": "Phase 6 — Enterprise plugin surface + 위변조방지 (USP-1)",
+      "phase": "phase_6",
+      "status": "future"
+    },
+    {
+      "id": "F-007",
+      "title": "Phase 7 — Solutionization (B2B/B2G 진입 준비, ISMS-P/GS/WA 인증 + 견적 + 망분리)",
+      "phase": "phase_7",
+      "status": "future"
+    }
+  ]
+}

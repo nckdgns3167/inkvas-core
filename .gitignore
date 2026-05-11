@@ -1,36 +1,69 @@
-# Phase 0 minimal .gitignore — full Phase 1 .gitignore supersedes (c3 port + 추가)
+# Inkvas .gitignore — Phase 1 (c3 port + 보강).
 #
 # *Critical rule*: legacy assets are reference only, never commit (Apache-2.0 OSS core
 # license clarity + repo slim). bootstrap.md (now docs/plans/0001-bootstrap-from-zero.md)
-# §"Setup (새 PC 진입)" + ADR-0000 + 사용자 명시 규칙.
+# + ADR-0000 + AGENTS.md A2.
 inkvas-legacy-assets/
 
-# Claude Code local-only state (local-only permissions / agent state)
-.claude/settings.local.json
-.claude/local/
-.claude/cache/
+# Dependencies
+node_modules/
+.pnpm-store/
 
-# OS noise
+# Build output (Phase 2+ 도입 후)
+.next/
+out/
+build/
+dist/
+
+# OS / IDE
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Editor noise
-.idea/
+*.pem
 .vscode/
+.idea/
 *.swp
 *.swo
 
-# Node / pnpm (Phase 1+ when toolchain added — pre-empt now to prevent first-commit pollution)
-node_modules/
-.pnpm-store/
-.next/
-dist/
-build/
-coverage/
-
-# Logs / env
+# Debug logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Env (절대 커밋 금지 — C9)
 .env
-.env.local
-.env.*.local
+.env*.local
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# Derived design tokens (DESIGN.md → packages/*/tokens/, Phase 3+ build-tokens 매번 빌드)
+packages/*/src/tokens/generated/
+
+# Test coverage / cache
+coverage/
+.vitest-cache/
+.playwright/
+playwright-report/
+test-results/
+
+# Lighthouse artifacts (D12 a11y CI)
+.lighthouseci/
+
+# Manual screenshot artifacts (Phase 3+ ADR-0014)
+public/manual/img/
+.manual-cache/
+
+# Vercel / Netlify (Phase 5+ 호스팅 결정 후)
+.vercel
+.netlify
+
+# Claude Code workspace state (사용자별, 공유 X)
+.claude/
+
+# Misc
+*.tgz
+.cache/

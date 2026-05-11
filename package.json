@@ -1,0 +1,29 @@
+{
+  "name": "inkvas-core-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Inkvas — PDF annotation · infinite canvas · collaboration · integrity (Apache-2.0 OSS core). Workspace root.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.30.1",
+  "scripts": {
+    "validate:features": "tsx scripts/validate-feature-list.ts",
+    "audit:freshness": "tsx scripts/competitive-audit-refresh.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint deferred — Phase 2 ADR-0003 tooling decision'",
+    "test": "echo 'test deferred — Phase 3+'",
+    "test:a11y": "echo 'a11y deferred — Phase 3+'",
+    "test:manual-freshness": "echo 'manual-freshness deferred — Phase 3+'",
+    "db:migrate:dry": "echo 'migration dry-run deferred — Phase 5+'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

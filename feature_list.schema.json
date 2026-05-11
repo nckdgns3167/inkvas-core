@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inkvas.app/feature_list.schema.json",
+  "title": "Inkvas Feature List",
+  "description": "Backlog SSOT for Inkvas. See AGENTS.md Section 0. WIP=1 enforcement, cross-feature reference checks, manual-freshness, audit-freshness, license-boundary, and acceptance.verifiable file existence are validated by scripts/validate-feature-list.ts (out of band of this schema).",
+  "type": "object",
+  "required": ["version", "wip_policy", "phases", "features"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version of this file (semver)."
+    },
+    "wip_policy": {
+      "type": "object",
+      "required": ["max_in_progress"],
+      "additionalProperties": false,
+      "properties": {
+        "max_in_progress": {
+          "const": 1,
+          "description": "AGENTS.md 3.1. 절대값. wip_lock=false feature는 카운트 제외 (validate-feature-list.ts에서 강제)."
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "required": ["phase_0"],
+      "additionalProperties": false,
+      "properties": {
+        "phase_0": { "$ref": "#/$defs/phase" },
+        "phase_1": { "$ref": "#/$defs/phase" },
+        "phase_2": { "$ref": "#/$defs/phase" },
+        "phase_3": { "$ref": "#/$defs/phase" },
+        "phase_4": { "$ref": "#/$defs/phase" },
+        "phase_5": { "$ref": "#/$defs/phase" },
+        "phase_6": { "$ref": "#/$defs/phase" },
+        "phase_7": { "$ref": "#/$defs/phase" }
+      }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/feature" }
+    }
+  },
+  "$defs": {
+    "phase": {
+      "type": "object",
+      "required": ["name", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["active", "future", "completed"] },
+        "due": {
+          "type": "string",
+          "format": "date",
+          "description": "Phase 마감일 (ISO 8601 date)"
+        },
+        "gate": {
+          "type": "string",
+          "description": "Gate ID (G0~G7) — bootstrap plan §Gate-Lock."
+        },
+        "kpi": { "type": "string" }
+      }
+    },
+    "featureId": {
+      "type": "string",
+      "pattern": "^F-\\d{3}$",
+      "description": "Feature ID. Phase 1: F-001~F-099, Phase 2: F-100~F-199, ..., Phase 7: F-600~F-699."
+    },
+    "constraintId": {
+      "type": "string",
+      "pattern": "^(A[1-3]|B[4-6]|C[7-9]|C10|D1[1-5]|E1[67]|P6-[12])$",
+      "description": "AGENTS.md Section 4 constraint ID. Inkvas 19종: A1-A3 / B4-B6 / C7-C10 / D11-D15 / E16-E17 / P6-1 / P6-2."
+    },
+    "adrId": {
+      "type": "string",
+      "pattern": "^ADR-\\d{4}$",
+      "description": "AGENTS.md Section 0.1 ADR ID — docs/adr/XXXX-...md"
+    },
+    "licenseTier": {
+      "enum": ["oss", "enterprise"],
+      "description": "이 feature 의 라이선스 경계 (ADR-0013). oss = packages/core/* | packages/host-*/*, enterprise = packages/enterprise/*. validate-feature-list.ts 가 경로/tier 정합 검증."
+    },
+    "manualImpact": {
+      "enum": ["none", "section", "new-chapter"],
+      "description": "메뉴얼 영향 (ADR-0014). 'none' 외 값인데 PR 에 docs/manual/** 변경 없으면 merge 차단. validate-feature-list.ts + init.sh manual-freshness."
+    },
+    "uspId": {
+      "enum": ["USP-1", "USP-2", "USP-3", "USP-4", "USP-5"],
+      "description": "USP 매핑 — USP-1 위변조 / USP-2 협업 / USP-3 동시작업 / USP-4 자유 캔버스 / USP-5 영속성. docs/business/usp.md 참조."
+    },
+    "feature": {
+      "type": "object",
+      "required": ["id", "title", "phase", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/featureId" },
+        "title": { "type": "string", "minLength": 1 },
+        "category": {
+          "enum": ["infra", "renderer", "annotation", "canvas", "persistence", "collab", "integrity", "host", "a11y", "ops", "enterprise", "docs"]
+        },
+        "track": {
+          "enum": ["T0_business", "T1_harness", "T2_adr", "T3_render", "T4_annotation", "T5_host_collab", "T6_enterprise", "T7_solution"]
+        },
+        "phase": { "enum": ["phase_0", "phase_1", "phase_2", "phase_3", "phase_4", "phase_5", "phase_6", "phase_7"] },
+        "status": {
+          "enum": ["planned", "in_progress", "paused", "blocked", "done", "future"]
+        },
+        "license_tier": { "$ref": "#/$defs/licenseTier" },
+        "manual_impact": { "$ref": "#/$defs/manualImpact" },
+        "audit_ref": {
+          "type": "string",
+          "description": "competitive-feature-audit.md 의 row # (또는 'original' if Inkvas 고유). audit 갱신 시 feature 재방문 트레이서블. 예: 'audit:#16' / 'audit:#14' / 'original'.",
+          "pattern": "^(audit:#\\d+|original)$"
+        },
+        "usp": { "$ref": "#/$defs/uspId" },
+        "estimate": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?[dh]$",
+          "description": "예: 1d, 4h, 0.5d, 2.5d. min 단위는 h로 환산."
+        },
+        "depends_on": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/featureId" }
+        },
+        "blocks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/featureId" }
+        },
+        "description": { "type": "string", "minLength": 1 },
+        "applies_constraints": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/constraintId" },
+          "description": "이 feature가 *특히 위반 위험이 큰* 제약 ID들. 모든 feature는 19개 제약 전부를 따라야 함 (AGENTS.md Section 4 머리말 참조)."
+        },
+        "relevant_adrs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/adrId" },
+          "description": "이 feature 작업 시 먼저 읽어야 할 ADR ID들 (선택). validate-feature-list.ts가 ADR 파일 존재 검증."
+        },
+        "acceptance": {
+          "type": "object",
+          "required": ["human"],
+          "additionalProperties": false,
+          "properties": {
+            "human": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 },
+              "description": "사람이 확인하는 인수 기준 체크리스트"
+            },
+            "verifiable": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "기계 검증 가능 항목. validate-feature-list.ts와 init.sh가 이 필드를 읽고 실제 검증.",
+              "properties": {
+                "tests": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "description": "실제 존재해야 하는 테스트 파일 경로."
+                },
+                "type_check": { "type": "boolean" },
+                "lint": { "type": "boolean" },
+                "build_pass": { "type": "boolean" },
+                "build_oss_only": {
+                  "type": "boolean",
+                  "description": "ADR-0013 — pnpm build:oss 단독 100% 동작 검증."
+                },
+                "migration_dry_run": { "type": "boolean" },
+                "schema_valid": { "type": "boolean" },
+                "files_exist": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 }
+                },
+                "lighthouse_a11y_min": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "D12 — Lighthouse a11y 최소 점수. Inkvas 기본값 95."
+                },
+                "tablet_60fps": {
+                  "type": "boolean",
+                  "description": "B4 — Galaxy Tab S9 FE+ 동등 60fps 회귀 검증 (Phase 3+)."
+                },
+                "long_task_zero": {
+                  "type": "boolean",
+                  "description": "B5 — 메인스레드 long-task >50ms 0개 검증."
+                },
+                "hash_chain_integrity": {
+                  "type": "boolean",
+                  "description": "C7 — 어노 op hash chain 변조 시뮬레이션 100% 감지 (USP-1)."
+                },
+                "crdt_round_trip": {
+                  "type": "boolean",
+                  "description": "E16 — CRDT 직렬화/역직렬화 round-trip 손실 0."
+                }
+              }
+            }
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "required": ["files_created"],
+          "additionalProperties": false,
+          "properties": {
+            "files_created": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "description": "이 feature가 생성하는 파일 경로 목록. validate-feature-list.ts가 done 상태에서 파일 존재 검증."
+            }
+          }
+        },
+        "active_history": {
+          "type": "array",
+          "description": "git이 done 이벤트의 SSOT이므로 done은 미기록. 미해결 상태(started/paused/blocked/resumed)만 누적.",
+          "items": {
+            "type": "object",
+            "required": ["type", "timestamp"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["started", "paused", "resumed", "blocked"] },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "session_ref": {
+                "type": "string",
+                "pattern": "^#session-\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "description": "paused/blocked일 경우 필수 (AGENTS.md 3.1)"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "type": { "enum": ["paused", "blocked"] } }
+                },
+                "then": { "required": ["reason"] }
+              }
+            ]
+          }
+        },
+        "notes": { "type": "string" },
+        "wip_lock": {
+          "type": "boolean",
+          "description": "false면 의존성 업데이트·보안 패치 등 메타 작업으로 분류, WIP 카운트에서 제외 (AGENTS.md 3.1). 명시 없으면 true 간주."
+        },
+        "risk_class": {
+          "enum": ["critical", "mid", "easy"],
+          "description": "ADR-0015 cross-review 트리거 분류. critical/mid는 plan 작성 시 frontmatter risk_class와 일치, critical은 PR + cross-review 강제. easy는 cross-review skip. 명시 없으면 plan 작성 시 결정."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "not": { "const": "future" } } }
+          },
+          "then": {
+            "required": [
+              "category",
+              "track",
+              "estimate",
+              "depends_on",
+              "blocks",
+              "description",
+              "applies_constraints",
+              "acceptance",
+              "artifacts",
+              "license_tier",
+              "manual_impact",
+              "audit_ref"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

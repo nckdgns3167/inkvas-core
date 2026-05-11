@@ -1,0 +1,14 @@
+{
+  "name": "@inkvas/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Inkvas core — PDF render + annotation + infinite canvas + CRDT + persistence + integrity (OSS, Apache-2.0). Phase 3+ implementation.",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "echo 'build deferred — Phase 3+ ADR-0003 framework + ADR-0005 renderer decision'"
+  }
+}
